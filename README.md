@@ -8,6 +8,9 @@ __`npm install -g swagger-models-to-react-proptypes`__
 
 __`swagger-models-to-react-proptypes http://petstore.swagger.io/v2/swagger.json`__
 
+#### Arguments
+ - `-c` converts prop types keys to camel case
+
 ```js
 /**
 

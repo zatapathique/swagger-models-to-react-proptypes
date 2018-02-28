@@ -9,6 +9,9 @@ var swaggerParsers = {
 };
 
 var url = process.argv[2];
+var options = {
+  camelizeKeys: process.argv.includes('-c'),
+};
 
 var client = new SwaggerClient({
     url: url,
@@ -16,6 +19,6 @@ var client = new SwaggerClient({
         if (!_.has(swaggerParsers, client.swaggerVersion)) {
             throw new Error('Unsupported swagger version - ' + client.swaggerVersion);
         }
-        swaggerParsers[client.swaggerVersion](client);
+        swaggerParsers[client.swaggerVersion](client, options);
     }
 });
