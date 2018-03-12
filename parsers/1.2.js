@@ -7,16 +7,16 @@ var indent = function (str) {
 }
 
 var missingRefPropType = function(props, propName, componentName) {
-    return new Error('The propType for \'' + propName + '\' could not be determined due to a missing Swagger model definition reference. Perhaps try \'React.PropTypes.any\'?');
+    return new Error('The propType for \'' + propName + '\' could not be determined due to a missing Swagger model definition reference. Perhaps try \'PropTypes.any\'?');
 };
 
 var unknownPropType = function(props, propName, componentName) {
-    return new Error('The propType for \'' + propName + '\' could not be determined from Swagger model definition. Perhaps try \'React.PropTypes.any\'?');
+    return new Error('The propType for \'' + propName + '\' could not be determined from Swagger model definition. Perhaps try \'PropTypes.any\'?');
 };
 
 var getPropType = function (definition, options) {
     if (definition.enum) {
-        return 'React.PropTypes.oneOf(' + JSON.stringify(definition.enum, null, 4) + ')';
+        return 'PropTypes.oneOf(' + JSON.stringify(definition.enum, null, 4) + ')';
     }
     if (definition.$ref) {
         var name = definition.$ref.match('#/definitions/(.*)')[1];
@@ -25,7 +25,7 @@ var getPropType = function (definition, options) {
 
     // treat it like an object definition if there's no type specificed
     if (!definition.type) {
-        return 'React.PropTypes.shape({\n'
+        return 'PropTypes.shape({\n'
             + indent(_.map(definition.properties, function (property, name) {
                 var keyPropType = convertDefinitionObjectToPropTypes(property, name, options);
                 if (_.contains(definition.required || [], name)) {
@@ -38,13 +38,13 @@ var getPropType = function (definition, options) {
 
     switch (definition.type) {
     case 'array':
-        return 'React.PropTypes.arrayOf(' + getPropType(definition.items, options) + ')';
+        return 'PropTypes.arrayOf(' + getPropType(definition.items, options) + ')';
     case 'string':
-        return 'React.PropTypes.string';
+        return 'PropTypes.string';
     case 'integer':
-        return 'React.PropTypes.number';
+        return 'PropTypes.number';
     case 'boolean':
-        return 'React.PropTypes.bool';
+        return 'PropTypes.bool';
     default:
         return unknownPropType;
     }
@@ -62,7 +62,7 @@ module.exports = function (swagger, options) {
     var header = 'Generated PropTypes for ' + swagger.url;
     console.log('\n/**\n\n' + header + '\n' + new Array(header.length + 1).join('-') + '\n\n**/\n\n');
 
-    console.log('var PropTypes = {\n');
+    console.log('const PropTypes = {\n');
 
     var propTypes = _.map(swagger.models, function (model, name) {
         return convertDefinitionObjectToPropTypes(model.definition, name, options);
